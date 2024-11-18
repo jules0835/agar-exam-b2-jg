@@ -7,10 +7,6 @@ const GamesStateManager = {
     return `G-${uuidv4()}`
   },
 
-  addGame: (game) => {
-    games.push(game)
-  },
-
   removeGame: (game) => {
     games.splice(games.indexOf(game), 1)
   },
@@ -25,6 +21,10 @@ const GamesStateManager = {
     if (!game.players) return
     game.players = game.players.filter((p) => p.playerId !== playerId)
     GamesStateManager.editGame(game)
+
+    if (game.players.length === 0) {
+      GamesStateManager.removeGame(game)
+    }
   },
 
   getGame: (gameId) => {
@@ -66,7 +66,7 @@ const GamesStateManager = {
       .emit("games:gameUpdate", GamesStateManager.getGame(gameId))
   },
 
-  updatePlayerPosition: (gameId, playerId, position) => {
+  updatePlayerPosition: (gameId, playerId, position, socket) => {
     var game = GamesStateManager.getGame(gameId)
     game = GamesStateManager.generateFood(game)
 
@@ -78,10 +78,10 @@ const GamesStateManager = {
     player.position = position
 
     GamesStateManager.editGame(game)
-    GamesStateManager.checkPlayerCollision(game, playerId)
+    GamesStateManager.checkPlayerCollision(game, playerId, socket)
   },
 
-  checkPlayerCollision: (game, playerId) => {
+  checkPlayerCollision: (game, playerId, socket) => {
     if (!game) return
     if (!game.players) return
     const player = game.players.find((p) => p.playerId === playerId)
@@ -100,6 +100,7 @@ const GamesStateManager = {
       if (distance < playerSize + pSize) {
         if (playerSize > pSize) {
           player.size += pSize
+          socket.to(game.gameId).emit("games:playerKilled", p.playerId)
           return false
         } else {
           p.size += playerSize

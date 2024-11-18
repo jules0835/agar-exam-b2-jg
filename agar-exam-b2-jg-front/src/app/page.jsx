@@ -7,10 +7,13 @@ export default function Home() {
     <div className="flex justify-center h-screen w-screen flex-col">
       <Header />
       <main className="text-center">
-        <div className="text-4xl font-bold my-10">Welcom to the Agar Game</div>
+        <div className="text-4xl font-bold my-10">Welcome to Agar.io</div>
         <div className="text-lg my-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Dive into the fast-paced and addictive world of Agar.io, a massively
+          multiplayer online game where survival is everything! Take control of
+          a tiny cell, absorb smaller cells to grow, and avoid being devoured by
+          larger opponents. Strategic movement, quick reflexes, and a bit of
+          cunning are key to becoming the largest cell in the arena.
         </div>
         <div className="my-16 animate-bounce">
           <Link
@@ -21,13 +24,11 @@ export default function Home() {
           </Link>
         </div>
         <div className="my-4">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+          Whether you're playing solo or teaming up with friends, Agar offers
+          endless fun and challenge. Customize your cell with unique skins,
+          experiment with different strategies, and climb the leaderboard to
+          dominate the arena. Simple to learn but hard to master, this game is
+          perfect for players of all ages!
         </div>
       </main>
       <Footer />

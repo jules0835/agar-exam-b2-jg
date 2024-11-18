@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 })
 
 app.get("/", (req, res) => {
-  res.send("Hello Agar player, let's go for a day of dev!")
+  res.send("Hello Agar player, let's go for a day full of dev!")
 })
 
 app.get("/api/games", (req, res) => {
@@ -91,13 +91,14 @@ ioServer.on("connection", (socket) => {
     GamesStateManager.updatePlayerPosition(
       data.gameId,
       data.playerId,
-      data.position
+      data.position,
+      socket
     )
     GamesStateManager.emitGameUpdate(ioServer, data.gameId)
   })
 
   socket.on("disconnect", () => {
-    //deconnexion du joueur de la partie
+    //deconnexion du joueur de la partie en cours et si il est le dernier joueur de la partie, suppression de la partie (Pas le temps pour ici)
   })
 })
 

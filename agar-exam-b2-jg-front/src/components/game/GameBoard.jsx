@@ -10,6 +10,7 @@ export default function GameBoard({
   setPlayerPosition,
 }) {
   const [direction, setDirection] = useState({ dx: 0, dy: 0 })
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
   const gameBoardRef = useRef(null)
 
   const worldWidth = game.world.width
@@ -18,6 +19,7 @@ export default function GameBoard({
   const player = game.players.find((p) => p.playerId === playerId)
   const movementSpeed = 2
 
+  // Handle player movement direction
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!gameBoardRef.current) return
@@ -38,6 +40,7 @@ export default function GameBoard({
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
+  // Update player position at a fixed interval
   useEffect(() => {
     const interval = setInterval(() => {
       setPlayerPosition((prevPosition) => ({
@@ -49,6 +52,18 @@ export default function GameBoard({
     return () => clearInterval(interval)
   }, [direction, worldWidth, worldHeight])
 
+  // Center the map on the player's position
+  useEffect(() => {
+    if (!gameBoardRef.current) return
+
+    const { width, height } = gameBoardRef.current.getBoundingClientRect()
+
+    setOffset({
+      x: Math.max(0, playerPosition.x - width / 2),
+      y: Math.max(0, playerPosition.y - height / 2),
+    })
+  }, [playerPosition])
+
   return (
     <div
       ref={gameBoardRef}
@@ -59,9 +74,7 @@ export default function GameBoard({
         style={{
           width: `${worldWidth}px`,
           height: `${worldHeight}px`,
-          transform: `translate(-${playerPosition.x - 250}px, -${
-            playerPosition.y - 250
-          }px)`,
+          transform: `translate(-${offset.x}px, -${offset.y}px)`,
           backgroundImage: `url('/background.jpg')`,
           backgroundSize: "repeat",
         }}
@@ -73,19 +86,6 @@ export default function GameBoard({
         {game.foods.map((food, index) => (
           <Food key={index} food={food} />
         ))}
-      </div>
-
-      <div
-        className="absolute z-50 w-10 h-10 rounded-full border-4 border-white bg-blue-500"
-        style={{
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <span className="text-white text-sm text-center block">
-          {player?.playerName || "Player"}
-        </span>
       </div>
     </div>
   )

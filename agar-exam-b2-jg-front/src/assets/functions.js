@@ -6,6 +6,8 @@ const returnErrorMessage = (errorId) => {
       return "Room not found, please try again"
     case "player_already_in_game":
       return "You are already in the game, you cannot join again"
+    case "player_killed":
+      return "You have been killed"
     default:
       return "An error occurred"
   }

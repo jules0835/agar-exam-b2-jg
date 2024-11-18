@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { usePlayerContext } from "@/context/Player"
 import LoadingPage from "@/components/ui/Loading"
 import { returnErrorMessage } from "@/assets/functions"
+import Image from "next/image"
 
 const BACKEND_URL = "http://localhost:3001"
 
@@ -120,14 +121,22 @@ export default function Game() {
             It's play time!
           </h1>
           <p className="text-gray-600 max-w-md mx-auto">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Choose your username and join a room to start playing to our
+            wonderful game!
           </p>
           <h2>
-            {errorId && (
+            {errorId && errorId != "player_killed" && (
               <span className="text-red-500">
                 Error: {returnErrorMessage(errorId)}
               </span>
+            )}
+            {errorId && errorId == "player_killed" && (
+              <div>
+                <span className="text-red-500">
+                  {returnErrorMessage(errorId)}
+                </span>
+                <Image href="/loose.gif" width={200} height={200} />
+              </div>
             )}
           </h2>
         </div>

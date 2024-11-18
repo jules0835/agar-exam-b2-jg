@@ -49,7 +49,7 @@ export default function Home() {
         setGame(response.gameData)
         setIsLoading(false)
         console.log("game joined", response)
-        setInitialPlayerPosition(response.gameData) // Passez les données pour éviter de dépendre de l'état
+        setInitialPlayerPosition(response.gameData)
       } catch (error) {
         console.error(error.message)
         router.push(`/game?e=${error.messageId}`)
@@ -57,6 +57,12 @@ export default function Home() {
     }
 
     joinGame()
+
+    Socket.on("games:playerKilled", (playerKilledId) => {
+      if (playerKilledId === playerId) {
+        router.push(`/game?e=player_killed`)
+      }
+    })
 
     Socket.on("games:gameUpdate", (game) => {
       console.log("game update", game)
