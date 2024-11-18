@@ -2,9 +2,9 @@
 import { io } from "socket.io-client"
 import { createContext, useContext } from "react"
 
-const BACKEND_URL = "http://localhost:3001"
+const BACKEND_URL_SOCKET = "http://localhost:3002"
 
-export const Socket = io(BACKEND_URL, {
+export const Socket = io(BACKEND_URL_SOCKET, {
   transports: ["websocket"],
 })
 

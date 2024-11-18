@@ -1,6 +1,12 @@
+import { v4 as uuidv4 } from "uuid"
+import { playerStateManager } from "./playerStateManager.js"
 const games = []
 
 const GamesStateManager = {
+  getNewGameId: () => {
+    return `G-${uuidv4()}`
+  },
+
   addGame: (game) => {
     games.push(game)
   },
@@ -18,16 +24,38 @@ const GamesStateManager = {
   },
 
   editGame: (game) => {
-    const index = games.findIndex((g) => g.room === game.room)
+    const index = games.findIndex((g) => g.gameId === game.gameId)
     games[index] = game
   },
 
-  newGameState: () => {
+  joinGame: (gameId, playerId, playerName) => {
+    newPlayer = playerStateManager.newPlayerGame(playerId, playerName)
+    const game = GamesStateManager.getGame(gameId)
+    game.players.push(newPlayer)
+    GamesStateManager.editGame(game)
+  },
+
+  newGameState: (name) => {
     return {
+      gameId: GamesStateManager.getNewGameId(),
+      gameName: name,
       players: [],
-      food: [],
-      viruses: [],
+      foods: [],
+      world: {
+        width: 5000,
+        height: 5000,
+      },
     }
+  },
+
+  emitGameListUpdate: (ioServer) => {
+    ioServer.emit("games:roomList", GamesStateManager.getGames())
+  },
+
+  emitGameUpdate: (ioServer, gameId) => {
+    ioServer
+      .to(gameId)
+      .emit("games:gameUpdate", GamesStateManager.getGame(gameId))
   },
 }
 

@@ -14,13 +14,17 @@ export default function Game() {
   const [gamesRoom, setGamesRoom] = useState([])
   const [username, setUsername] = useState("")
   const [newRoomName, setNewRoomName] = useState("")
-  const [playerLoaded, setPlayerLoaded] = useState(false) // Nouveau état pour suivre si playerName est chargé
+  const [playerLoaded, setPlayerLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const getRooms = () => {
     fetch(BACKEND_URL + "/api/games")
       .then((res) => res.json())
-      .then((data) => setGamesRoom(data))
+      .then((data) => {
+        setGamesRoom(data)
+        console.log(data)
+      })
   }
 
   const handleRename = () => {
@@ -35,6 +39,7 @@ export default function Game() {
       return
     }
 
+    setIsLoading(true)
     handleRename()
 
     fetch(BACKEND_URL + "/api/games", {
@@ -43,7 +48,7 @@ export default function Game() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: newRoomName,
+        gameName: newRoomName,
       }),
     })
       .then((res) => res.json())
@@ -51,37 +56,24 @@ export default function Game() {
         if (data.error) {
           alert(data.error)
         } else {
-          router.push(`/game/${data.id}`)
+          router.push(`/game/${data.gameId}`)
         }
+      })
+      .finally(() => {
+        setIsLoading(false)
       })
   }
 
   const joinGame = (gameId) => {
-    if (!username || !newRoomName) {
-      alert("Please fill in the form")
+    if (!username) {
+      alert("Please fill in the form with your username")
       return
     }
 
+    setIsLoading(true)
     handleRename()
 
-    fetch("/api/rooms/join", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        room: gameId,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          alert(data.error)
-        } else {
-          router.push(`/game/${gameId}`)
-        }
-      })
+    router.push(`/game/${gameId}`)
   }
 
   useEffect(() => {
@@ -98,16 +90,17 @@ export default function Game() {
 
     getRooms()
 
-    Socket.on("game:roomList", (roomList) => {
+    Socket.on("games:roomList", (roomList) => {
+      console.log(roomList)
       setGamesRoom(roomList)
     })
 
     return () => {
-      Socket.off("game:roomList")
+      Socket.off("games:roomList")
     }
   }, [playerName])
 
-  if (playerLoaded) {
+  if (!playerLoaded || isLoading) {
     return <LoadingPage />
   }
 
@@ -146,7 +139,7 @@ export default function Game() {
 
           <div className="hidden lg:block border-l border-gray-300 mx-4"></div>
 
-          <div className="flex flex-col items-center lg:w-2/3">
+          <div className="flex flex-col items-center justify-center lg:w-2/3">
             <h2 className="text-center font-bold text-2xl mb-4 text-gray-700">
               Choose your room
             </h2>
@@ -154,11 +147,11 @@ export default function Game() {
               <div className="grid grid-cols-2 gap-4 w-full">
                 {gamesRoom.map((game) => (
                   <button
-                    key={game.id}
-                    onClick={() => joinGame(game.id)}
+                    key={game.gameId}
+                    onClick={() => joinGame(game.gameId)}
                     className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition"
                   >
-                    {game.name}
+                    {game.gameName}
                   </button>
                 ))}
               </div>

@@ -1,6 +1,6 @@
-import { SocketProvider } from "@/context/Socket"
 import { PlayerProvider } from "@/context/Player"
 import "../styles/globals.css"
+import { SocketProvider } from "@/context/Socket"
 
 export const metadata = {
   title: "Agar Exam B2 JG",
