@@ -19,7 +19,6 @@ export default function GameBoard({
   const player = game.players.find((p) => p.playerId === playerId)
   const movementSpeed = 2
 
-  // Handle player movement direction
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!gameBoardRef.current) return
@@ -40,7 +39,6 @@ export default function GameBoard({
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
 
-  // Update player position at a fixed interval
   useEffect(() => {
     const interval = setInterval(() => {
       setPlayerPosition((prevPosition) => ({
@@ -52,7 +50,6 @@ export default function GameBoard({
     return () => clearInterval(interval)
   }, [direction, worldWidth, worldHeight])
 
-  // Center the map on the player's position
   useEffect(() => {
     if (!gameBoardRef.current) return
 
