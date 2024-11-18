@@ -1,3 +1,5 @@
+import { SocketProvider } from "@/context/Socket"
+import { PlayerProvider } from "@/context/Player"
 import "../styles/globals.css"
 
 export const metadata = {
@@ -8,7 +10,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={``}>{children}</body>
+      <PlayerProvider>
+        <SocketProvider>
+          <body className={``}>{children}</body>
+        </SocketProvider>
+      </PlayerProvider>
     </html>
   )
 }

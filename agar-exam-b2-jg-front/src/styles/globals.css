@@ -1,3 +1,108 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* debut des animation pour la page de chargement, pour le laoding je ne fais pas de tailwind css pour plus de simplicité */
+.loading-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+  position: relative;
+}
+
+.loading-container {
+  text-align: center;
+}
+
+.loading-text {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+.loading-text-p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+.circles {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  animation: moveAndGrow 5s ease-in-out infinite;
+  opacity: 0.8;
+  background-color: rgba(0, 123, 255, 0.6);
+}
+
+.circle.small {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 99, 71, 0.8);
+  animation-delay: 0s;
+}
+
+.circle.medium {
+  width: 70px;
+  height: 70px;
+  background-color: rgba(60, 179, 113, 0.8);
+  animation-delay: 1s;
+}
+
+.circle.large {
+  width: 100px;
+  height: 100px;
+  background-color: rgba(255, 165, 0, 0.8);
+  animation-delay: 2s;
+}
+
+@keyframes moveAndGrow {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+
+  25% {
+    transform: translate(50px, -50px) scale(1.2);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: translate(-50px, 50px) scale(1.4);
+    opacity: 1;
+  }
+
+  75% {
+    transform: translate(100px, 100px) scale(1.6);
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
