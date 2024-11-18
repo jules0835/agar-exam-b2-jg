@@ -56,7 +56,3 @@ Je vous remercie pour votre attention et vous souhaite une bonne correction.
 
 Cordialement,  
 **Jules G**
-
-```
-
-```
