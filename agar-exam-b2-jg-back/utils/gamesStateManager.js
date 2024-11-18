@@ -19,8 +19,16 @@ const GamesStateManager = {
     return games
   },
 
-  getGame: (roomId) => {
-    return games.find((game) => game.room === roomId)
+  leaveGame: (gameId, playerId) => {
+    const game = GamesStateManager.getGame(gameId)
+    if (!game) return
+    if (!game.players) return
+    game.players = game.players.filter((p) => p.playerId !== playerId)
+    GamesStateManager.editGame(game)
+  },
+
+  getGame: (gameId) => {
+    return games.find((game) => game.gameId === gameId)
   },
 
   editGame: (game) => {
@@ -29,7 +37,7 @@ const GamesStateManager = {
   },
 
   joinGame: (gameId, playerId, playerName) => {
-    newPlayer = playerStateManager.newPlayerGame(playerId, playerName)
+    const newPlayer = playerStateManager.newPlayerGame(playerId, playerName)
     const game = GamesStateManager.getGame(gameId)
     game.players.push(newPlayer)
     GamesStateManager.editGame(game)
@@ -42,8 +50,8 @@ const GamesStateManager = {
       players: [],
       foods: [],
       world: {
-        width: 5000,
-        height: 5000,
+        width: 1000,
+        height: 1000,
       },
     }
   },
@@ -56,6 +64,93 @@ const GamesStateManager = {
     ioServer
       .to(gameId)
       .emit("games:gameUpdate", GamesStateManager.getGame(gameId))
+  },
+
+  updatePlayerPosition: (gameId, playerId, position) => {
+    var game = GamesStateManager.getGame(gameId)
+    game = GamesStateManager.generateFood(game)
+
+    if (!game) return
+
+    const player = game.players?.find((p) => p.playerId === playerId)
+    if (!player) return
+
+    player.position = position
+
+    GamesStateManager.editGame(game)
+    GamesStateManager.checkPlayerCollision(game, playerId)
+  },
+
+  checkPlayerCollision: (game, playerId) => {
+    if (!game) return
+    if (!game.players) return
+    const player = game.players.find((p) => p.playerId === playerId)
+    if (!player) return
+
+    const { x: playerX, y: playerY } = player.position
+    const playerSize = player.size
+
+    game.players = game.players.filter((p) => {
+      if (p.playerId === playerId) return true
+
+      const { x: pX, y: pY } = p.position
+      const pSize = p.size
+      const distance = Math.sqrt((playerX - pX) ** 2 + (playerY - pY) ** 2)
+
+      if (distance < playerSize + pSize) {
+        if (playerSize > pSize) {
+          player.size += pSize
+          return false
+        } else {
+          p.size += playerSize
+          return p.playerId !== playerId
+        }
+      }
+
+      return true
+    })
+
+    game.foods = game.foods.filter((f) => {
+      const { x: fX, y: fY } = f.position
+      const fSize = f.size
+      const distance = Math.sqrt((playerX - fX) ** 2 + (playerY - fY) ** 2)
+
+      if (distance < playerSize + fSize) {
+        player.size += 1
+        return false
+      }
+
+      return true
+    })
+  },
+
+  generateFood: (game) => {
+    if (game && game.foods && game.foods.length < 40) {
+      for (let i = 0; i < 20; i++) {
+        game.foods.push({
+          position: {
+            x: Math.floor(Math.random() * game.world.width),
+            y: Math.floor(Math.random() * game.world.height),
+          },
+          size: 5,
+          color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+        })
+      }
+    } else if (game && !game.foods) {
+      if (!game.foods) game.foods = []
+      for (let i = 0; i < 40; i++) {
+        game.foods.push({
+          position: {
+            x: Math.floor(Math.random() * game.world.width),
+            y: Math.floor(Math.random() * game.world.height),
+          },
+          size: 5,
+          color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+        })
+      }
+    }
+
+    return game
   },
 }
 

@@ -3,9 +3,10 @@
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Socket } from "@/context/Socket"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { usePlayerContext } from "@/context/Player"
 import LoadingPage from "@/components/ui/Loading"
+import { returnErrorMessage } from "@/assets/functions"
 
 const BACKEND_URL = "http://localhost:3001"
 
@@ -16,6 +17,7 @@ export default function Game() {
   const [newRoomName, setNewRoomName] = useState("")
   const [playerLoaded, setPlayerLoaded] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const errorId = useSearchParams().get("e")
   const router = useRouter()
 
   const getRooms = () => {
@@ -121,6 +123,13 @@ export default function Game() {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </p>
+          <h2>
+            {errorId && (
+              <span className="text-red-500">
+                Error: {returnErrorMessage(errorId)}
+              </span>
+            )}
+          </h2>
         </div>
 
         <div className="flex flex-col lg:flex-row items-stretch lg:space-x-16 w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">

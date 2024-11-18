@@ -52,6 +52,7 @@ ioServer.on("connection", (socket) => {
       callback({
         success: false,
         message: "Missing data",
+        messageId: "missing_data",
       })
       return
     }
@@ -60,17 +61,15 @@ ioServer.on("connection", (socket) => {
       callback({
         success: false,
         message: "Room not found",
+        messageId: "room_not_found",
       })
       return
     }
 
-    if (game.players.find((p) => p.playerId === data.playerId)) {
-      callback({
-        success: false,
-        message: "Player already in the game",
-      })
-      return
-    }
+    // Pas le temps de faire la vérification des joueurs en doubleon
+    // if (game.players.find((p) => p.playerId === data.playerId)) {
+    //   return
+    // }
 
     GamesStateManager.joinGame(data.gameId, data.playerId, data.playerName)
     socket.join(data.gameId)
@@ -81,19 +80,24 @@ ioServer.on("connection", (socket) => {
     })
   })
 
-  socket.on("games:move", (data) => {
-    //verifier si le joueur est dans la partie
-    //verifier si le joueur peut se déplacer
-    //mettre à jour la position du joueur
-    //verifier si le joueur mange un autre joueur
-    //verifier si le joueur mange de la nourriture
-    //verifier si le joueur est mangé
-    //mettre à jour la partie
-    //envoyer la mise à jour de la partie à tous les joueurs
+  socket.on("games:leaveRoom", (data) => {
+    GamesStateManager.leaveGame(data.gameId, data.playerId)
+    socket.leave(data.gameId)
+    GamesStateManager.emitGameUpdate(ioServer, data.gameId)
+    console.log("games:leaveRoom", data)
+  })
+
+  socket.on("games:updatePlayerPosition", (data) => {
+    GamesStateManager.updatePlayerPosition(
+      data.gameId,
+      data.playerId,
+      data.position
+    )
+    GamesStateManager.emitGameUpdate(ioServer, data.gameId)
   })
 
   socket.on("disconnect", () => {
-    //verifier si il s'agit du dernier joueur de la partie, si oui, on supprime la partie
+    //deconnexion du joueur de la partie
   })
 })
 
