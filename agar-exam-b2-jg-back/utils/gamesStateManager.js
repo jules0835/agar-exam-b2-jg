@@ -54,8 +54,8 @@ const GamesStateManager = {
       players: [],
       foods: [],
       world: {
-        width: 1000,
-        height: 1000,
+        width: 5000,
+        height: 5000,
       },
     }
   },
