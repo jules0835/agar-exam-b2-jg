@@ -15,6 +15,10 @@ const GamesStateManager = {
     return games
   },
 
+  addGame: (game) => {
+    games.push(game)
+  },
+
   leaveGame: (gameId, playerId) => {
     const game = GamesStateManager.getGame(gameId)
     if (!game) return
