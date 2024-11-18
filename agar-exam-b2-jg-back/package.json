@@ -1,0 +1,16 @@
+{
+  "name": "agar-exam-b2-jg-back",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.1",
+    "http": "^0.0.1-security",
+    "socket.io": "^4.8.1"
+  }
+}
