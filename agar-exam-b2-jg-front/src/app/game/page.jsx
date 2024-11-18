@@ -131,11 +131,16 @@ export default function Game() {
               </span>
             )}
             {errorId && errorId == "player_killed" && (
-              <div>
+              <div className="flex flex-col items-center">
                 <span className="text-red-500">
                   {returnErrorMessage(errorId)}
                 </span>
-                <Image href="/loose.gif" width={200} height={200} />
+                <Image
+                  src="/loose.gif"
+                  width={200}
+                  height={200}
+                  alt="Loose GIF"
+                />
               </div>
             )}
           </h2>
